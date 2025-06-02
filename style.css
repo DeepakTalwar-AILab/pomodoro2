@@ -1,0 +1,544 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Phone Container */
+.phone-container {
+    width: 375px;
+    height: 812px;
+    background: #FFFFFF;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px 8px;
+    background: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+}
+
+.battery-status {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-size: 12px;
+}
+
+/* App Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 20px;
+    background: #FFFFFF;
+}
+
+.app-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.menu-icon, .settings-icon {
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.menu-icon:hover, .settings-icon:hover {
+    background: #F5F5F5;
+}
+
+/* Timer Content */
+.timer-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #FFFFFF;
+}
+
+/* Session Info */
+.session-info {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.session-indicator {
+    margin-bottom: 12px;
+}
+
+.session-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #E5E5E5;
+    transition: background 0.3s ease;
+}
+
+.dot.active {
+    background: #FF6B6B;
+}
+
+.session-type {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Timer Circle */
+.timer-circle {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+    filter: drop-shadow(0 4px 12px rgba(255, 107, 107, 0.2));
+}
+
+.progress-circle {
+    transition: stroke-dasharray 0.3s ease;
+    stroke-dasharray: 754; /* Circumference: 2 * π * 120 */
+    stroke-dashoffset: 0;
+}
+
+/* Timer Display */
+.timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.tomato-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+}
+
+.time-display {
+    font-size: 36px;
+    font-weight: 300;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+.time-label {
+    font-size: 14px;
+    color: #999;
+    font-weight: 400;
+}
+
+/* Control Section */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.control-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #FF6B6B;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(255, 107, 107, 0.4);
+}
+
+.control-btn:active {
+    transform: translateY(0px);
+}
+
+.btn-icon {
+    font-size: 24px;
+    color: white;
+    margin-left: 3px; /* Slight offset for play button visual balance */
+}
+
+.btn-icon.pause {
+    margin-left: 0;
+}
+
+.control-labels {
+    display: flex;
+    gap: 40px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background: #F5F5F5;
+    color: #666;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    display: flex;
+    background: #FFFFFF;
+    padding: 12px 0 24px;
+    border-top: 1px solid #F0F0F0;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.nav-item:hover {
+    background: #F8F8F8;
+}
+
+.nav-item.active .nav-icon {
+    color: #FF6B6B;
+}
+
+.nav-item.active .nav-label {
+    color: #FF6B6B;
+}
+
+.nav-icon {
+    font-size: 20px;
+    color: #CCC;
+}
+
+.nav-label {
+    font-size: 11px;
+    color: #CCC;
+    font-weight: 500;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 15px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #F5F5F5;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Stats Modal */
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: #F8F9FA;
+    margin-bottom: 12px;
+    transition: background 0.3s ease;
+}
+
+.stat-item:hover {
+    background: #F0F0F0;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FF6B6B;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Settings Modal */
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    display: block;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.setting-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #E5E5E5;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.setting-group select:focus {
+    outline: none;
+    border-color: #FF6B6B;
+}
+
+/* Switch Toggle */
+.switch-label {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    background: #CCC;
+    border-radius: 13px;
+    transition: background 0.3s ease;
+}
+
+.switch:before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]:checked + .switch {
+    background: #FF6B6B;
+}
+
+input[type="checkbox"]:checked + .switch:before {
+    transform: translateX(24px);
+}
+
+/* Save Button */
+.save-btn {
+    width: 100%;
+    padding: 14px;
+    background: #FF6B6B;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.save-btn:hover {
+    background: #FF5252;
+}
+
+/* Animation States */
+.timer-running .tomato-icon {
+    animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite;
+}
+
+.timer-running .control-btn {
+    background: #FF8A80;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-6px) scale(1.05); }
+}
+
+/* Session Type Colors */
+.focus-time .progress-circle {
+    stroke: #FF6B6B;
+}
+
+.short-break .progress-circle {
+    stroke: #4ECDC4;
+}
+
+.long-break .progress-circle {
+    stroke: #45B7D1;
+}
+
+.focus-time .control-btn {
+    background: #FF6B6B;
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+
+.short-break .control-btn {
+    background: #4ECDC4;
+    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+}
+
+.long-break .control-btn {
+    background: #45B7D1;
+    box-shadow: 0 8px 20px rgba(69, 183, 209, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 420px) {
+    .phone-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        max-width: 375px;
+    }
+    
+    body {
+        padding: 0;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+}
+
+@media (max-height: 850px) {
+    .timer-content {
+        padding: 15px;
+    }
+    
+    .timer-circle {
+        margin-bottom: 30px;
+    }
+    
+    .session-info {
+        margin-bottom: 30px;
+    }
+} 

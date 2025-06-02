@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="phone-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time-status">9:41</div>
+            <div class="battery-status">
+                <span class="signal">●●●</span>
+                <span class="wifi">📶</span>
+                <span class="battery">🔋</span>
+            </div>
+        </div>
+        
+        <!-- App Header -->
+        <div class="app-header">
+            <div class="menu-icon">☰</div>
+            <h1>Pomodoro</h1>
+            <div class="settings-icon" id="headerSettings">⚙️</div>
+        </div>
+        
+        <!-- Main Timer Content -->
+        <div class="timer-content">
+            <!-- Session Info -->
+            <div class="session-info">
+                <div class="session-indicator">
+                    <span class="session-dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </span>
+                </div>
+                <div class="session-type" id="sessionType">Focus Time</div>
+            </div>
+            
+            <!-- Circular Timer -->
+            <div class="timer-circle">
+                <svg class="progress-ring" width="280" height="280" viewBox="0 0 280 280">
+                    <!-- Background circle -->
+                    <circle 
+                        cx="140" 
+                        cy="140" 
+                        r="120" 
+                        stroke="#FFE5E5" 
+                        stroke-width="12" 
+                        fill="none">
+                    </circle>
+                    <!-- Progress circle -->
+                    <circle 
+                        cx="140" 
+                        cy="140" 
+                        r="120" 
+                        stroke="#FF6B6B" 
+                        stroke-width="12" 
+                        fill="none" 
+                        stroke-linecap="round"
+                        class="progress-circle"
+                        id="progressCircle">
+                    </circle>
+                </svg>
+                
+                <!-- Timer Display -->
+                <div class="timer-display">
+                    <div class="tomato-icon">🍅</div>
+                    <div class="time-display" id="timeDisplay">25:00</div>
+                    <div class="time-label">minutes</div>
+                </div>
+            </div>
+            
+            <!-- Control Button -->
+            <div class="control-section">
+                <button class="control-btn" id="controlBtn">
+                    <span class="btn-icon" id="btnIcon">▶</span>
+                </button>
+                <div class="control-labels">
+                    <button class="action-btn" id="resetBtn">Reset</button>
+                    <button class="action-btn" id="skipBtn">Skip</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="timerTab">
+                <span class="nav-icon">⏰</span>
+                <span class="nav-label">Timer</span>
+            </div>
+            <div class="nav-item" id="statsTab">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Stats</span>
+            </div>
+            <div class="nav-item" id="settingsTab">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Settings</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Your Stats</h2>
+                <button class="close-btn" id="closeStats">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="stat-item">
+                    <div class="stat-number" id="sessionsToday">0</div>
+                    <div class="stat-label">Sessions Today</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSessions">0</div>
+                    <div class="stat-label">Total Sessions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="focusTime">0h 0m</div>
+                    <div class="stat-label">Focus Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="streak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="closeSettings">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>Focus Duration</label>
+                    <select id="focusDuration">
+                        <option value="1500">25 minutes</option>
+                        <option value="1800">30 minutes</option>
+                        <option value="2700">45 minutes</option>
+                        <option value="3600">60 minutes</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Short Break</label>
+                    <select id="shortBreakDuration">
+                        <option value="300">5 minutes</option>
+                        <option value="600">10 minutes</option>
+                        <option value="900">15 minutes</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Long Break</label>
+                    <select id="longBreakDuration">
+                        <option value="900">15 minutes</option>
+                        <option value="1200">20 minutes</option>
+                        <option value="1800">30 minutes</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label class="switch-label">
+                        <input type="checkbox" id="soundEnabled" checked>
+                        <span class="switch"></span>
+                        Sound Notifications
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="switch-label">
+                        <input type="checkbox" id="autoStartBreaks">
+                        <span class="switch"></span>
+                        Auto-start Breaks
+                    </label>
+                </div>
+                <button class="save-btn" id="saveSettings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
