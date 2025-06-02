@@ -97,6 +97,10 @@
                 <span class="nav-icon">📊</span>
                 <span class="nav-label">Stats</span>
             </div>
+            <div class="nav-item" id="journalTab">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Journal</span>
+            </div>
             <div class="nav-item" id="settingsTab">
                 <span class="nav-icon">⚙️</span>
                 <span class="nav-label">Settings</span>
@@ -127,6 +131,64 @@
                 <div class="stat-item">
                     <div class="stat-number" id="streak">0</div>
                     <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Journal Modal -->
+    <div class="modal" id="journalModal">
+        <div class="modal-content journal-content">
+            <div class="modal-header">
+                <h2>📝 Daily Journal</h2>
+                <button class="close-btn" id="closeJournal">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Date Navigation -->
+                <div class="date-navigation">
+                    <button class="date-nav-btn" id="prevDate">‹</button>
+                    <div class="current-date" id="currentDate"></div>
+                    <button class="date-nav-btn" id="nextDate">›</button>
+                </div>
+                
+                <!-- Entry Stats -->
+                <div class="entry-stats">
+                    <div class="stat-mini">
+                        <span class="stat-label">Words:</span>
+                        <span class="stat-value" id="wordCount">0</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-label">Sessions:</span>
+                        <span class="stat-value" id="sessionsCount">0</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Prompts -->
+                <div class="journal-prompts">
+                    <button class="prompt-btn" data-prompt="What did I accomplish today?">💪 Accomplishments</button>
+                    <button class="prompt-btn" data-prompt="What did I learn?">🧠 Learnings</button>
+                    <button class="prompt-btn" data-prompt="How am I feeling?">💭 Feelings</button>
+                    <button class="prompt-btn" data-prompt="Tomorrow I will focus on...">🎯 Tomorrow's Focus</button>
+                </div>
+                
+                <!-- Journal Text Area -->
+                <div class="journal-editor">
+                    <textarea 
+                        id="journalText" 
+                        placeholder="Write your thoughts, reflections, and insights from today's Pomodoro sessions...&#10;&#10;💡 Tip: Use the prompt buttons above for inspiration!"
+                        rows="12"
+                    ></textarea>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="journal-actions">
+                    <button class="action-btn secondary" id="clearEntry">Clear</button>
+                    <button class="action-btn primary" id="exportJournal">Export</button>
+                </div>
+                
+                <!-- Auto-save Indicator -->
+                <div class="auto-save-indicator" id="autoSaveIndicator">
+                    <span class="save-status">✓ Auto-saved</span>
                 </div>
             </div>
         </div>

@@ -36,12 +36,28 @@ class PomodoroTimer {
         // Modal elements
         this.statsModal = document.getElementById('statsModal');
         this.settingsModal = document.getElementById('settingsModal');
+        this.journalModal = document.getElementById('journalModal');
         
         // Navigation elements
         this.timerTab = document.getElementById('timerTab');
         this.statsTab = document.getElementById('statsTab');
+        this.journalTab = document.getElementById('journalTab');
         this.settingsTab = document.getElementById('settingsTab');
         this.headerSettings = document.getElementById('headerSettings');
+        
+        // Journal elements
+        this.journalText = document.getElementById('journalText');
+        this.currentDate = document.getElementById('currentDate');
+        this.prevDateBtn = document.getElementById('prevDate');
+        this.nextDateBtn = document.getElementById('nextDate');
+        this.wordCountEl = document.getElementById('wordCount');
+        this.sessionsCountEl = document.getElementById('sessionsCount');
+        this.autoSaveIndicator = document.getElementById('autoSaveIndicator');
+        
+        // Journal data
+        this.currentJournalDate = new Date();
+        this.journalEntries = this.loadJournalEntries();
+        this.autoSaveTimer = null;
         
         // Circle properties for SVG animation
         this.radius = 120;
@@ -54,6 +70,7 @@ class PomodoroTimer {
         this.updateSessionDots();
         this.updateStatsDisplay();
         this.loadSettingsToForm();
+        this.initializeJournal();
         this.attachEventListeners();
     }
     
@@ -114,13 +131,27 @@ class PomodoroTimer {
         // Navigation
         this.timerTab.addEventListener('click', () => this.showTimer());
         this.statsTab.addEventListener('click', () => this.showStats());
+        this.journalTab.addEventListener('click', () => this.showJournal());
         this.settingsTab.addEventListener('click', () => this.showSettings());
         this.headerSettings.addEventListener('click', () => this.showSettings());
         
         // Modal controls
         document.getElementById('closeStats').addEventListener('click', () => this.hideStats());
         document.getElementById('closeSettings').addEventListener('click', () => this.hideSettings());
+        document.getElementById('closeJournal').addEventListener('click', () => this.hideJournal());
         document.getElementById('saveSettings').addEventListener('click', () => this.saveSettingsFromForm());
+        
+        // Journal controls
+        this.prevDateBtn.addEventListener('click', () => this.navigateDate(-1));
+        this.nextDateBtn.addEventListener('click', () => this.navigateDate(1));
+        this.journalText.addEventListener('input', () => this.scheduleAutoSave());
+        document.getElementById('clearEntry').addEventListener('click', () => this.clearJournalEntry());
+        document.getElementById('exportJournal').addEventListener('click', () => this.exportJournal());
+        
+        // Journal prompts
+        document.querySelectorAll('.prompt-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.insertPrompt(e.target.dataset.prompt));
+        });
         
         // Close modals when clicking outside
         this.statsModal.addEventListener('click', (e) => {
@@ -129,6 +160,10 @@ class PomodoroTimer {
         
         this.settingsModal.addEventListener('click', (e) => {
             if (e.target === this.settingsModal) this.hideSettings();
+        });
+        
+        this.journalModal.addEventListener('click', (e) => {
+            if (e.target === this.journalModal) this.hideJournal();
         });
     }
     
@@ -162,10 +197,16 @@ class PomodoroTimer {
         this.setActiveTab('timer');
     }
     
+    hideJournal() {
+        this.journalModal.classList.remove('active');
+        this.setActiveTab('timer');
+    }
+    
     setActiveTab(tab) {
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         if (tab === 'timer') this.timerTab.classList.add('active');
         else if (tab === 'stats') this.statsTab.classList.add('active');
+        else if (tab === 'journal') this.journalTab.classList.add('active');
         else if (tab === 'settings') this.settingsTab.classList.add('active');
     }
     
@@ -329,6 +370,9 @@ class PomodoroTimer {
             this.stats.streak = this.stats.sessionsToday;
             
             this.saveStats();
+            
+            // Update journal session count
+            this.incrementJournalSessions();
         }
         
         // Play notification sound
@@ -487,16 +531,181 @@ class PomodoroTimer {
             this.showNotification('🎉 Congratulations! You completed all 4 Pomodoro sessions!');
         }
     }
+    
+    // Journal Methods
+    loadJournalEntries() {
+        const saved = localStorage.getItem('pomodoroJournal');
+        return saved ? JSON.parse(saved) : {};
+    }
+    
+    saveJournalEntries() {
+        localStorage.setItem('pomodoroJournal', JSON.stringify(this.journalEntries));
+    }
+    
+    initializeJournal() {
+        this.updateCurrentDateDisplay();
+        this.loadJournalEntry();
+        this.updateJournalStats();
+    }
+    
+    showJournal() {
+        this.setActiveTab('journal');
+        this.hideStats();
+        this.hideSettings();
+        this.loadJournalEntry();
+        this.updateJournalStats();
+        this.journalModal.classList.add('active');
+        this.journalText.focus();
+    }
+    
+    getDateKey(date = this.currentJournalDate) {
+        return date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    }
+    
+    loadJournalEntry() {
+        const dateKey = this.getDateKey();
+        const entry = this.journalEntries[dateKey] || { text: '', sessions: 0 };
+        this.journalText.value = entry.text;
+        this.updateWordCount();
+    }
+    
+    saveJournalEntry() {
+        const dateKey = this.getDateKey();
+        const text = this.journalText.value;
+        
+        if (!this.journalEntries[dateKey]) {
+            this.journalEntries[dateKey] = { text: '', sessions: 0 };
+        }
+        
+        this.journalEntries[dateKey].text = text;
+        this.saveJournalEntries();
+        this.showAutoSaveIndicator();
+    }
+    
+    scheduleAutoSave() {
+        clearTimeout(this.autoSaveTimer);
+        this.updateWordCount();
+        
+        this.autoSaveTimer = setTimeout(() => {
+            this.saveJournalEntry();
+        }, 1000); // Auto-save after 1 second of inactivity
+    }
+    
+    showAutoSaveIndicator() {
+        this.autoSaveIndicator.classList.add('show');
+        setTimeout(() => {
+            this.autoSaveIndicator.classList.remove('show');
+        }, 2000);
+    }
+    
+    updateWordCount() {
+        const text = this.journalText.value.trim();
+        const wordCount = text ? text.split(/\s+/).length : 0;
+        this.wordCountEl.textContent = wordCount;
+    }
+    
+    updateJournalStats() {
+        const dateKey = this.getDateKey();
+        const entry = this.journalEntries[dateKey] || { text: '', sessions: 0 };
+        this.sessionsCountEl.textContent = entry.sessions;
+    }
+    
+    updateCurrentDateDisplay() {
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        this.currentDate.textContent = this.currentJournalDate.toLocaleDateString(undefined, options);
+    }
+    
+    navigateDate(direction) {
+        const newDate = new Date(this.currentJournalDate);
+        newDate.setDate(newDate.getDate() + direction);
+        
+        // Don't allow future dates
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        if (newDate > today) return;
+        
+        this.currentJournalDate = newDate;
+        this.updateCurrentDateDisplay();
+        this.loadJournalEntry();
+        this.updateJournalStats();
+    }
+    
+    insertPrompt(prompt) {
+        const currentText = this.journalText.value;
+        const newText = currentText ? `${currentText}\n\n${prompt}\n` : `${prompt}\n`;
+        this.journalText.value = newText;
+        this.journalText.focus();
+        
+        // Move cursor to end
+        this.journalText.setSelectionRange(newText.length, newText.length);
+        this.updateWordCount();
+        this.scheduleAutoSave();
+    }
+    
+    clearJournalEntry() {
+        if (confirm('Are you sure you want to clear this journal entry?')) {
+            this.journalText.value = '';
+            this.updateWordCount();
+            this.scheduleAutoSave();
+            this.journalText.focus();
+        }
+    }
+    
+    exportJournal() {
+        const entries = Object.entries(this.journalEntries)
+            .filter(([_, entry]) => entry.text.trim())
+            .sort(([a], [b]) => b.localeCompare(a)) // Sort by date descending
+            .map(([date, entry]) => {
+                const formattedDate = new Date(date).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                return `# ${formattedDate}\nSessions: ${entry.sessions}\n\n${entry.text}\n\n---\n\n`;
+            })
+            .join('');
+        
+        if (!entries) {
+            alert('No journal entries to export!');
+            return;
+        }
+        
+        const blob = new Blob([`# My Pomodoro Journal\n\n${entries}`], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `pomodoro-journal-${new Date().toISOString().split('T')[0]}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Journal exported! 📝');
+    }
+    
+    // Update session count in journal when completing a session
+    incrementJournalSessions() {
+        const dateKey = this.getDateKey();
+        if (!this.journalEntries[dateKey]) {
+            this.journalEntries[dateKey] = { text: '', sessions: 0 };
+        }
+        this.journalEntries[dateKey].sessions++;
+        this.saveJournalEntries();
+        this.updateJournalStats();
+    }
 }
 
 // Initialize the timer when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    const timer = new PomodoroTimer();
+    new PomodoroTimer();
     
-    // Set initial session class
-    document.querySelector('.phone-container').classList.add('focus-time');
-    
-    // Request notification permission on first load
+    // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
     }
